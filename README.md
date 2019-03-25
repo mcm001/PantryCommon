@@ -1,0 +1,1 @@
+Pantry-common is a repo for misc useful stuff
