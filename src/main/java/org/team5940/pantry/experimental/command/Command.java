@@ -1,9 +1,7 @@
 package org.team5940.pantry.experimental.command;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import java.util.stream.Stream;
 
 /**
  * A state machine representing a complete action to be performed by the robot.  Commands are
@@ -27,19 +25,12 @@ public interface Command {
 	default void execute() {}
 
 	/**
-	 * The action to take when the command is forced to end early.  Called either when the command
-	 * is interrupted by another command with a shared requirement, or when the command is explicitly
-	 * canceled.  Defaults to call the ordinary end() method.
+	 * The action to take when the command ends.  Called when either the command finishes normally,
+	 * or when it interrupted/canceled.
+	 *
+	 * @param interrupted whether the command was interrupted/canceled
 	 */
-	default void interrupted() {
-		end();
-	}
-
-	/**
-	 * The action to take when the command ends normally.  Called once after the command reports that
-	 * it is finished, and called by default from interrupted().
-	 */
-	default void end() {}
+	default void end(boolean interrupted) {}
 
 	/**
 	 * Whether the command has finished.  Once a command finishes, the scheduler will call its
@@ -99,7 +90,7 @@ public interface Command {
 	 * @return the command with the interrupt condition added
 	 */
 	default Command interruptOn(BooleanSupplier condition) {
-		return new ParallelRaceGroup(this, new EndOnConditionCommand(condition));
+		return new ParallelRaceGroup(this, new WaitUntilCommand(condition));
 	}
 
 	/**
@@ -148,14 +139,15 @@ public interface Command {
 	 * @return the decorated command
 	 */
 	default Command andThen(Command... next) {
-		return new SequentialCommandGroup(
-				(Command[]) Stream.concat(Stream.of(this), Arrays.stream(next)).toArray());
+		SequentialCommandGroup group = new SequentialCommandGroup(this);
+		group.addCommands(next);
+		return group;
 	}
 
 	/**
 	 * Decorates this command with a set of commands to run parallel to it, ending when the calling
 	 * command ends and interrupting all the others.  Often more convenient/less-verbose than
-	 * constructing a new {@link ParallelDictatorGroup} explicitly.
+	 * constructing a new {@link ParallelDeadlineGroup} explicitly.
 	 *
 	 * <p>Note: This decorator works by composing this command within a CommandGroup.  The command
 	 * cannot be used independently after being decorated, or be re-decorated with a different
@@ -166,8 +158,8 @@ public interface Command {
 	 * @param parallel the commands to run in parallel
 	 * @return the decorated command
 	 */
-	default Command alongWith(Command... parallel) {
-		return new ParallelDictatorGroup(this, parallel);
+	default Command deadlineWith(Command... parallel) {
+		return new ParallelDeadlineGroup(this, parallel);
 	}
 
 	/**
@@ -184,9 +176,10 @@ public interface Command {
 	 * @param parallel the commands to run in parallel
 	 * @return the decorated command
 	 */
-	default Command asWellAs(Command... parallel) {
-		return new ParallelCommandGroup(
-				(Command[]) Stream.concat(Stream.of(this), Arrays.stream(parallel)).toArray());
+	default Command alongWith(Command... parallel) {
+		ParallelCommandGroup group = new ParallelCommandGroup(this);
+		group.addCommands(parallel);
+		return group;
 	}
 
 	/**
@@ -204,8 +197,25 @@ public interface Command {
 	 * @return the decorated command
 	 */
 	default Command raceWith(Command... parallel) {
-		return new ParallelRaceGroup(
-				(Command[]) Stream.concat(Stream.of(this), Arrays.stream(parallel)).toArray());
+		ParallelRaceGroup group = new ParallelRaceGroup(this);
+		group.addCommands(parallel);
+		return group;
+	}
+
+	/**
+	 * Decorates this command to run perpetually, ignoring its ordinary end conditions.  The decorated
+	 * command can still be interrupted or canceled.
+	 *
+	 * <p>Note: This decorator works by composing this command within a CommandGroup.  The command
+	 * cannot be used independently after being decorated, or be re-decorated with a different
+	 * decorator, unless it is manually cleared from the list of grouped commands with
+	 * {@link CommandGroupBase#clearGroupedCommand(Command)}.  The decorated command can, however, be
+	 * further decorated without issue.
+	 *
+	 * @return the decorated command
+	 */
+	default Command perpetually() {
+		return new PerpetualCommand(this);
 	}
 
 	/**
@@ -245,12 +255,15 @@ public interface Command {
 	}
 
 	/**
-	 * Whether the command requires a given subsystem.
+	 * Whether the command requires a given subsystem.  Named "hasRequirement" rather than "requires"
+	 * to avoid confusion with
+	 * {@link edu.wpi.first.wpilibj.command.Command#requires(edu.wpi.first.wpilibj.command.Subsystem)}
+	 *  - this may be able to be changed in a few years.
 	 *
 	 * @param requirement the subsystem to inquire about
 	 * @return whether the subsystem is required
 	 */
-	default boolean requires(Subsystem requirement) {
+	default boolean hasRequirement(Subsystem requirement) {
 		return getRequirements().contains(requirement);
 	}
 

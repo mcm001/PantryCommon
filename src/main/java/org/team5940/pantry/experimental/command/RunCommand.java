@@ -1,5 +1,7 @@
 package org.team5940.pantry.experimental.command;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.BooleanSupplier;
 
 /**
@@ -20,18 +22,9 @@ public class RunCommand extends SendableCommandBase {
 	 * @param requirements the subsystems to require
 	 */
 	public RunCommand(Runnable toRun, Subsystem... requirements) {
+		requireNonNull(toRun);
 		m_toRun = toRun;
 		addRequirements(requirements);
-	}
-
-	/**
-	 * Creates a new RunRunnableCommand.  The Runnable will be run continuously until the command
-	 * ends.  No subsystems will be required.
-	 *
-	 * @param toRun the Runnable to run
-	 */
-	public RunCommand(Runnable toRun) {
-		this(toRun, new Subsystem[0]);
 	}
 
 	@Override

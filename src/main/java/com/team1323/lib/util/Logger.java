@@ -1,6 +1,5 @@
 package com.team1323.lib.util;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,15 +12,15 @@ public class Logger {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void log(String mark) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("/home/lvuser/log.txt", true))) {
-        	
-            writer.print(mark);
-//            writer.println();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		try (PrintWriter writer = new PrintWriter(new FileWriter("/home/lvuser/log.txt", true))) {
+
+			writer.print(mark);
+			//            writer.println();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

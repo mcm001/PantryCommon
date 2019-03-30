@@ -81,7 +81,7 @@ public final class CommandScheduler extends SendableBase {
 	private final List<Consumer<Command>> m_initActions = new ArrayList<>();
 	private final List<Consumer<Command>> m_executeActions = new ArrayList<>();
 	private final List<Consumer<Command>> m_interruptActions = new ArrayList<>();
-	private final List<Consumer<Command>> m_endActions = new ArrayList<>();
+	private final List<Consumer<Command>> m_finishedActions = new ArrayList<>();
 
 	CommandScheduler() {
 		HAL.report(tResourceType.kResourceType_Command, tInstances.kCommand_Scheduler);
@@ -228,8 +228,8 @@ public final class CommandScheduler extends SendableBase {
 				action.accept(command);
 			}
 			if (command.isFinished()) {
-				command.end();
-				for (Consumer<Command> action : m_endActions) {
+				command.end(false);
+				for (Consumer<Command> action : m_finishedActions) {
 					action.accept(command);
 				}
 				iterator.remove();
@@ -317,7 +317,7 @@ public final class CommandScheduler extends SendableBase {
 				continue;
 			}
 
-			command.interrupted();
+			command.end(true);
 			for (Consumer<Command> action : m_interruptActions) {
 				action.accept(command);
 			}
@@ -417,12 +417,12 @@ public final class CommandScheduler extends SendableBase {
 	}
 
 	/**
-	 * Adds an action to perform on the ending of any command by the scheduler.
+	 * Adds an action to perform on the finishing of any command by the scheduler.
 	 *
 	 * @param action the action to perform
 	 */
-	public void onCommandEnd(Consumer<Command> action) {
-		m_endActions.add(action);
+	public void onCommandFinished(Consumer<Command> action) {
+		m_finishedActions.add(action);
 	}
 
 	@Override

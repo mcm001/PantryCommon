@@ -1,5 +1,7 @@
 package org.team5940.pantry.experimental.command;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A Command that runs instantly; it will initialize, execute once, and end on the same
  * iteration of the scheduler.  Users can either pass in a Runnable and a set of requirements,
@@ -16,17 +18,9 @@ public class InstantCommand extends SendableCommandBase {
 	 * @param requirements the subsystems required by this command
 	 */
 	public InstantCommand(Runnable toRun, Subsystem... requirements) {
+		requireNonNull(toRun);
 		m_toRun = toRun;
 		addRequirements(requirements);
-	}
-
-	/**
-	 * Creates a new InstantCommand that runs the given Runnable with no requirements.
-	 *
-	 * @param toRun the Runnable to run
-	 */
-	public InstantCommand(Runnable toRun) {
-		this(toRun, new Subsystem[0]);
 	}
 
 	/**

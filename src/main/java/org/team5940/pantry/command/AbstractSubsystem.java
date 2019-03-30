@@ -14,22 +14,18 @@ package org.team5940.pantry.command;
  * at the start of the match.
  */
 public abstract class AbstractSubsystem {
-    public void writeToLog() {
-    }
+	public void writeToLog() {}
 
-    // Optional design pattern for caching periodic reads to avoid hammering the HAL/CAN.
-    public void readPeriodicInputs() {
-    }
+	// Optional design pattern for caching periodic reads to avoid hammering the HAL/CAN.
+	public void readPeriodicInputs() {}
 
-    // Optional design pattern for caching periodic writes to avoid hammering the HAL/CAN.
-    public void writePeriodicOutputs() {
-    }
+	// Optional design pattern for caching periodic writes to avoid hammering the HAL/CAN.
+	public void writePeriodicOutputs() {}
 
-    public abstract void outputTelemetry();
+	public abstract void outputTelemetry();
 
-    public abstract void stop();
+	public abstract void stop();
 
-    public void zeroSensors() {
-    }
+	public void zeroSensors() {}
 
 }

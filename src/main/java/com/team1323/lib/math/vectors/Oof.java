@@ -4,6 +4,7 @@ public class Oof extends Exception {
 	public Oof() {
 		super("Woah");
 	}
+
 	public Oof(String message) {
 		super(message);
 	}

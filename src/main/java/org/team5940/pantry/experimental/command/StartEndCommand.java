@@ -1,5 +1,7 @@
 package org.team5940.pantry.experimental.command;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.BooleanSupplier;
 
 /**
@@ -10,7 +12,8 @@ import java.util.function.BooleanSupplier;
  */
 public class StartEndCommand extends SendableCommandBase {
 
-	protected final Runnable m_onInit, m_onEnd;
+	protected final Runnable m_onInit;
+	protected final Runnable m_onEnd;
 
 	/**
 	 * Creates a new StartEndCommand.  Will run the given runnables when the command starts and when
@@ -21,6 +24,8 @@ public class StartEndCommand extends SendableCommandBase {
 	 * @param requirements the subsystems required by this command
 	 */
 	public StartEndCommand(Runnable onInit, Runnable onEnd, Subsystem... requirements) {
+		requireNonNull(onInit);
+		requireNonNull(onEnd);
 		m_onInit = onInit;
 		m_onEnd = onEnd;
 		addRequirements(requirements);
@@ -32,7 +37,7 @@ public class StartEndCommand extends SendableCommandBase {
 	}
 
 	@Override
-	public void end() {
+	public void end(boolean interrupted) {
 		m_onEnd.run();
 	}
 }

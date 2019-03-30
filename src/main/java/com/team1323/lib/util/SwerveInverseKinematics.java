@@ -14,43 +14,43 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Now i have no idea what the frick this does
  */
 public class SwerveInverseKinematics {
-	
-	public SwerveInverseKinematics(){
+
+	public SwerveInverseKinematics() {
 		setCenterOfRotation(new Translation2d());
 	}
-	
+
 	private final int kNumberOfModules = 4;
-	
+
 	private List<Translation2d> moduleRelativePositions = Constants.kModulePositions;
 	private List<Translation2d> moduleRotationDirections = updateRotationDirections();
-			
-	private List<Translation2d> updateRotationDirections(){
+
+	private List<Translation2d> updateRotationDirections() {
 		List<Translation2d> directions = new ArrayList<>(kNumberOfModules);
-		for(int i = 0; i < kNumberOfModules; i++){
+		for (int i = 0; i < kNumberOfModules; i++) {
 			directions.add(moduleRelativePositions.get(i).rotateBy(Rotation2d.fromDegrees(90)));
 		}
 		return directions;
 	}
-	
-	public void setCenterOfRotation(Translation2d center){
+
+	public void setCenterOfRotation(Translation2d center) {
 		List<Translation2d> positions = new ArrayList<>(kNumberOfModules);
 		double maxMagnitude = 0.0;
-		for(int i = 0; i < kNumberOfModules; i++){
+		for (int i = 0; i < kNumberOfModules; i++) {
 			Translation2d position = Constants.kModulePositions.get(i).translateBy(center.inverse());
 			positions.add(position);
 			double magnitude = position.norm();
-			if(magnitude > maxMagnitude){
+			if (magnitude > maxMagnitude) {
 				maxMagnitude = magnitude;
 			}
 		}
-		for(int i = 0; i < kNumberOfModules; i++){
+		for (int i = 0; i < kNumberOfModules; i++) {
 			Translation2d position = positions.get(i);
-			positions.set(i, position.scale(1.0/maxMagnitude));
+			positions.set(i, position.scale(1.0 / maxMagnitude));
 		}
 		moduleRelativePositions = positions;
 		moduleRotationDirections = updateRotationDirections();
 	}
-	
+
 	/**
 	 * 
 	 * @param translationalVector the current robot motion vector
@@ -59,30 +59,30 @@ public class SwerveInverseKinematics {
 	 * @param robotCentric if the motion is robot centric or not
 	 * @return
 	 */
-	public List<Translation2d> updateDriveVectors(Translation2d translationalVector, double rotationalMagnitude, 
-			Pose2d robotPose, boolean robotCentric){
+	public List<Translation2d> updateDriveVectors(Translation2d translationalVector, double rotationalMagnitude,
+			Pose2d robotPose, boolean robotCentric) {
 		SmartDashboard.putNumber("Vector Direction", translationalVector.direction().getDegrees());
 		//SmartDashboard.putNumber("Vector Magnitude", translationalVector.norm());
 		SmartDashboard.putNumber("Robot Velocity", translationalVector.norm());
-		
-		if(!robotCentric)
+
+		if (!robotCentric)
 			translationalVector = translationalVector.rotateBy(robotPose.getRotation().inverse()); // put the translation vector in the robot's scope
 		List<Translation2d> driveVectors = new ArrayList<>(kNumberOfModules);
-		for(int i = 0; i < kNumberOfModules; i++){
+		for (int i = 0; i < kNumberOfModules; i++) {
 			driveVectors.add(translationalVector.translateBy(moduleRotationDirections.get(i).scale(rotationalMagnitude)));
 		}
 		double maxMagnitude = 1.0;
-		for(Translation2d t : driveVectors){
+		for (Translation2d t : driveVectors) {
 			double magnitude = t.norm();
-			if(magnitude > maxMagnitude){
+			if (magnitude > maxMagnitude) {
 				maxMagnitude = magnitude;
 			}
 		}
-		for(int i = 0; i < kNumberOfModules; i++){
+		for (int i = 0; i < kNumberOfModules; i++) {
 			Translation2d driveVector = driveVectors.get(i);
-			driveVectors.set(i, driveVector.scale(1.0/maxMagnitude));
+			driveVectors.set(i, driveVector.scale(1.0 / maxMagnitude));
 		}
 		return driveVectors;
 	}
-	
+
 }

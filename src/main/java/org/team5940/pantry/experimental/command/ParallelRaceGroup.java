@@ -7,7 +7,7 @@ import java.util.Set;
 import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
 
 /**
- * A CommandGroup that runs a set of commands in parallel, ending when the first command ends
+ * A CommandGroup that runs a set of commands in parallel, ending when any one of the commands ends
  * and interrupting all the others.
  *
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
@@ -16,7 +16,7 @@ public class ParallelRaceGroup extends CommandGroupBase {
 
 	private final Set<Command> m_commands = new HashSet<>();
 	private boolean m_runWhenDisabled = true;
-	private boolean m_finished;
+	private boolean m_finished = true;
 
 	/**
 	 * Creates a new ParallelCommandRace.  The given commands will be executed simultaneously, and
@@ -35,6 +35,11 @@ public class ParallelRaceGroup extends CommandGroupBase {
 			throw new IllegalUseOfCommandException("Commands cannot be added to multiple CommandGroups");
 		}
 
+		if (!m_finished) {
+			throw new IllegalUseOfCommandException(
+					"Commands cannot be added to a CommandGroup while the group is running");
+		}
+
 		registerGroupedCommands(commands);
 
 		for (Command command : commands) {
@@ -50,6 +55,7 @@ public class ParallelRaceGroup extends CommandGroupBase {
 
 	@Override
 	public void initialize() {
+		m_finished = false;
 		for (Command command : m_commands) {
 			command.initialize();
 		}
@@ -61,23 +67,16 @@ public class ParallelRaceGroup extends CommandGroupBase {
 			command.execute();
 			if (command.isFinished()) {
 				m_finished = true;
-				command.end();
+				command.end(false);
 			}
 		}
 	}
 
 	@Override
-	public void interrupted() {
-		for (Command command : m_commands) {
-			command.interrupted();
-		}
-	}
-
-	@Override
-	public void end() {
+	public void end(boolean interrupted) {
 		for (Command command : m_commands) {
 			if (!command.isFinished()) {
-				command.interrupted();
+				command.end(true);
 			}
 		}
 	}

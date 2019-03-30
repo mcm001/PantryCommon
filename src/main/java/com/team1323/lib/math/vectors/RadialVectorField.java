@@ -7,16 +7,18 @@ public class RadialVectorField extends VectorField {
 	public RadialVectorField(Translation2d where) {
 		there = where;
 	}
+
 	public RadialVectorField(Translation2d where, boolean away) {
 		there = where;
-		if(away) direction = -1;
+		if (away)
+			direction = -1;
 	}
-	
+
 	protected int direction = 1;
 	protected Translation2d there;
-	
+
 	public Translation2d getVector(Translation2d here) {
-		Translation2d v = new Translation2d(here,there);
-		return v.scale(direction/v.norm());
+		Translation2d v = new Translation2d(here, there);
+		return v.scale(direction / v.norm());
 	}
 }

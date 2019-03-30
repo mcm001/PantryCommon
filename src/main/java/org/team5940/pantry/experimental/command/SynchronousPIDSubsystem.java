@@ -1,15 +1,17 @@
 package org.team5940.pantry.experimental.command;
 
+import static java.util.Objects.requireNonNull;
+
 import org.team5940.pantry.experimental.controller.PIDController;
 
 /**
- * A subsystem that uses a PIDController to control an output.  The controller is run synchronously
- * from the subsystem's periodic() method.
+ * A subsystem that uses a {@link PIDController} to control an output.  The controller is run
+ * synchronously from the subsystem's periodic() method.
  */
 public abstract class SynchronousPIDSubsystem extends SendableSubsystemBase {
 
-	private final PIDController m_controller;
-	private boolean m_enabled;
+	protected final PIDController m_controller;
+	protected boolean m_enabled;
 
 	/**
 	 * Creates a new SynchronousPIDSubsystem.
@@ -17,6 +19,7 @@ public abstract class SynchronousPIDSubsystem extends SendableSubsystemBase {
 	 * @param controller the PIDController to use
 	 */
 	public SynchronousPIDSubsystem(PIDController controller) {
+		requireNonNull(controller);
 		m_controller = controller;
 	}
 
@@ -25,7 +28,7 @@ public abstract class SynchronousPIDSubsystem extends SendableSubsystemBase {
 		m_controller.setReference(getReference());
 
 		if (m_enabled) {
-			useOutput(m_controller.update());
+			useOutput(m_controller.calculate(getReference(), getMeasurement()));
 		}
 	}
 
@@ -48,11 +51,25 @@ public abstract class SynchronousPIDSubsystem extends SendableSubsystemBase {
 	public abstract double getReference();
 
 	/**
-	 * Enable or disable the PIDController.
+	 * Returns the measurement of the process variable used by the PIDController.
 	 *
-	 * @param enabled whether the controller is enabled
+	 * @return the measurement of the process variable
 	 */
-	public void setEnabled(boolean enabled) {
-		m_enabled = enabled;
+	public abstract double getMeasurement();
+
+	/**
+	 * Enables the PID control.  Resets the controller.
+	 */
+	public void enable() {
+		m_enabled = true;
+		m_controller.reset();
+	}
+
+	/**
+	 * Disables the PID control.  Sets output to zero.
+	 */
+	public void disable() {
+		m_enabled = false;
+		useOutput(0);
 	}
 }
