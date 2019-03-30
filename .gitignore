@@ -6,3 +6,4 @@
 *.bin
 *.jar
 *.xml
+.gradle/buildOutputCleanup/cache.properties
