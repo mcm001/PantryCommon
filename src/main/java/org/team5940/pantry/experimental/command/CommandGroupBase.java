@@ -13,7 +13,7 @@ public abstract class CommandGroupBase extends SendableCommandBase implements Co
 
 	private static Set<Command> m_groupedCommands = Collections.newSetFromMap(new WeakHashMap<>());
 
-	static void registerGroupedCommands(Command... commands) {
+	public static void registerGroupedCommands(Command... commands) {
 		m_groupedCommands.addAll(Set.of(commands));
 	}
 
