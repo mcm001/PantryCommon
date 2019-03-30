@@ -7,3 +7,4 @@
 *.jar
 *.xml
 .gradle/buildOutputCleanup/cache.properties
+build/spotlessJava
