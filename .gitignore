@@ -8,3 +8,5 @@
 *.xml
 .gradle/buildOutputCleanup/cache.properties
 build/spotlessJava
+src/main/.DS_Store
+.DS_Store

@@ -83,7 +83,7 @@ dependencies {
   // testCompile 'junit:junit:4.12'
   compile 'com.google.code.gson:gson:2.8.2'
 
-	compile 'com.github.5190GreenHopeRobotics:FalconLibrary:2019.3.4'
+//	compile 'com.github.5190GreenHopeRobotics:FalconLibrary:2019.3.4'
 
   compile 'com.github.Oblarg:Oblog:2.8.1'
 
