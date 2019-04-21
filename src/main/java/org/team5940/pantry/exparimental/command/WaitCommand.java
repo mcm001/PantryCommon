@@ -1,5 +1,7 @@
 package org.team5940.pantry.exparimental.command;
 
+import org.ghrobotics.lib.mathematics.units.Time;
+
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -18,6 +20,10 @@ public class WaitCommand extends SendableCommandBase {
 	public WaitCommand(double seconds) {
 		m_duration = seconds;
 		setName(m_name + ": " + seconds + " seconds");
+	}
+
+	public WaitCommand(Time time) {
+		this(time.getSecond());
 	}
 
 	@Override
