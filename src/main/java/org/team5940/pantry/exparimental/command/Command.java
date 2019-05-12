@@ -225,7 +225,7 @@ public interface Command {
 	 *                      shares one of its requirements
 	 */
 	default void schedule(boolean interruptible) {
-		CommandScheduler.getInstance().scheduleCommand(this, interruptible);
+		CommandScheduler.getInstance().schedule(interruptible, this);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public interface Command {
 	 * Commands will be canceled even if they are not marked as interruptible.
 	 */
 	default void cancel() {
-		CommandScheduler.getInstance().cancelCommand(this);
+		CommandScheduler.getInstance().cancel(this);
 	}
 
 	/**

@@ -184,7 +184,7 @@ public abstract class Button extends Trigger {
 	}
 
 	/**
-	 * Cancel the command when the button is pressed.
+	 * Cancels the command when the button is pressed.
 	 *
 	 * @param command the command to start
 	 * @return this button, so calls can be chained

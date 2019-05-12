@@ -7,6 +7,8 @@
 
 package org.team5940.pantry.exparimental.buttons;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.wpi.first.wpilibj.GenericHID;
 
 /**
@@ -24,6 +26,8 @@ public class JoystickButton extends Button {
 	 * @param buttonNumber The button number (see {@link GenericHID#getRawButton(int) }
 	 */
 	public JoystickButton(GenericHID joystick, int buttonNumber) {
+		requireNonNull(joystick);
+
 		m_joystick = joystick;
 		m_buttonNumber = buttonNumber;
 	}

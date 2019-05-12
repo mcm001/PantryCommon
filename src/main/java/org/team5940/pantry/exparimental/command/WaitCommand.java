@@ -1,7 +1,5 @@
 package org.team5940.pantry.exparimental.command;
 
-import org.ghrobotics.lib.mathematics.units.Time;
-
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -10,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class WaitCommand extends SendableCommandBase {
 	protected Timer m_timer = new Timer();
-	final double m_duration;
+	private final double m_duration;
 
 	/**
 	 * Creates a new WaitCommand.  This command will do nothing, and end after the specified duration.
@@ -22,19 +20,10 @@ public class WaitCommand extends SendableCommandBase {
 		setName(m_name + ": " + seconds + " seconds");
 	}
 
-	public WaitCommand(Time time) {
-		this(time.getSecond());
-	}
-
 	@Override
 	public void initialize() {
 		m_timer.reset();
 		m_timer.start();
-	}
-
-	@Override
-	public void execute() {
-
 	}
 
 	@Override

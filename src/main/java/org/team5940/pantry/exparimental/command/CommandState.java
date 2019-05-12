@@ -2,7 +2,11 @@ package org.team5940.pantry.exparimental.command;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class CommandState {
+/**
+ * Class that holds scheduling state for a command.  Used internally by the
+ * {@link CommandScheduler}.
+ */
+class CommandState {
 
 	/**
 	 * The time since this command was initialized.

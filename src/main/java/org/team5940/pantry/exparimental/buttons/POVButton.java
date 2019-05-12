@@ -7,6 +7,8 @@
 
 package org.team5940.pantry.exparimental.buttons;
 
+import static java.util.Objects.requireNonNull;
+
 import edu.wpi.first.wpilibj.GenericHID;
 
 /**
@@ -25,6 +27,8 @@ public class POVButton extends Button {
 	 * @param povNumber The POV number (see {@link GenericHID#getPOV(int)})
 	 */
 	public POVButton(GenericHID joystick, int angle, int povNumber) {
+		requireNonNull(joystick);
+
 		m_joystick = joystick;
 		m_angle = angle;
 		m_povNumber = povNumber;

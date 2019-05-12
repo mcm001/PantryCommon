@@ -25,7 +25,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
-import org.team5940.pantry.exparimental.buttons.Trigger.ButtonScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
@@ -66,8 +65,8 @@ public final class CommandScheduler extends SendableBase {
 	//as a list of currently-registered subsystems.
 	private final Map<Subsystem, Command> m_subsystems = new LinkedHashMap<>();
 
-	//The set of currently-bound buttons.
-	private final Collection<ButtonScheduler> m_buttons = new LinkedHashSet<>();
+	//The set of currently-registered buttons that will be polled every iteration.
+	private final Collection<Runnable> m_buttons = new LinkedHashSet<>();
 
 	private boolean m_disabled;
 
@@ -92,7 +91,7 @@ public final class CommandScheduler extends SendableBase {
 	 *
 	 * @param button the button to add
 	 */
-	public void addButton(ButtonScheduler button) {
+	public void addButton(Runnable button) {
 		m_buttons.add(button);
 	}
 
@@ -109,12 +108,11 @@ public final class CommandScheduler extends SendableBase {
 	 * currently using those requirements have been scheduled as interruptible.  If this is
 	 * the case, they will be interrupted and the command will be scheduled.
 	 *
-	 * @param command       the command to schedule
 	 * @param interruptible whether this command can be interrupted
+	 * @param command       the command to schedule
 	 */
 	@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
-	public void scheduleCommand(Command command, boolean interruptible) {
-
+	private void schedule(boolean interruptible, Command command) {
 		if (CommandGroupBase.getGroupedCommands().contains(command)) {
 			throw new IllegalUseOfCommandException(
 					"A command that is part of a command group cannot be independently scheduled");
@@ -153,7 +151,7 @@ public final class CommandScheduler extends SendableBase {
 			if (allInterruptible) {
 				for (Subsystem requirement : requirements) {
 					if (m_requirements.containsKey(requirement)) {
-						cancelCommand(m_requirements.get(requirement));
+						cancel(m_requirements.get(requirement));
 					}
 				}
 				command.initialize();
@@ -175,10 +173,20 @@ public final class CommandScheduler extends SendableBase {
 	 * @param interruptible whether the commands should be interruptible
 	 * @param commands      the commands to schedule
 	 */
-	public void scheduleCommands(boolean interruptible, Command... commands) {
+	public void schedule(boolean interruptible, Command... commands) {
 		for (Command command : commands) {
-			scheduleCommand(command, interruptible);
+			schedule(interruptible, command);
 		}
+	}
+
+	/**
+	 * Schedules multiple commands for execution, with interruptible defaulted to true.  Does nothing
+	 * if the command is already scheduled.
+	 *
+	 * @param commands      the commands to schedule
+	 */
+	public void schedule(Command... commands) {
+		schedule(true, commands);
 	}
 
 	/**
@@ -197,7 +205,6 @@ public final class CommandScheduler extends SendableBase {
 	 */
 	@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
 	public void run() {
-
 		if (m_disabled) {
 			return;
 		}
@@ -208,17 +215,17 @@ public final class CommandScheduler extends SendableBase {
 		}
 
 		//Poll buttons for new commands to add.
-		for (ButtonScheduler button : m_buttons) {
-			button.execute();
+		for (Runnable button : m_buttons) {
+			button.run();
 		}
 
 		//Run scheduled commands, remove finished commands.
 		for (Iterator<Command> iterator = m_scheduledCommands.keySet().iterator(); iterator.hasNext();) {
 			Command command = iterator.next();
 
-			if (RobotState.isDisabled() && !command.runsWhenDisabled()) {
+			if (!command.runsWhenDisabled() && RobotState.isDisabled()) {
 				iterator.remove();
-				cancelCommand(command);
+				cancel(command);
 				continue;
 			}
 
@@ -241,7 +248,7 @@ public final class CommandScheduler extends SendableBase {
 		for (Map.Entry<Subsystem, Command> subsystemCommand : m_subsystems.entrySet()) {
 			if (!m_requirements.containsKey(subsystemCommand.getKey())
 					&& subsystemCommand.getValue() != null) {
-				scheduleCommand(subsystemCommand.getValue(), true);
+				schedule(subsystemCommand.getValue());
 			}
 		}
 	}
@@ -310,7 +317,7 @@ public final class CommandScheduler extends SendableBase {
 	 *
 	 * @param commands the commands to cancel
 	 */
-	public void cancelCommand(Command... commands) {
+	public void cancel(Command... commands) {
 		for (Command command : commands) {
 			if (!m_scheduledCommands.containsKey(command)) {
 				continue;
@@ -330,7 +337,7 @@ public final class CommandScheduler extends SendableBase {
 	 */
 	public void cancelAll() {
 		for (Command command : m_scheduledCommands.keySet()) {
-			cancelCommand(command);
+			cancel(command);
 		}
 	}
 
@@ -375,14 +382,14 @@ public final class CommandScheduler extends SendableBase {
 	}
 
 	/**
-	 * Disable the command scheduler.
+	 * Disables the command scheduler.
 	 */
 	public void disable() {
 		m_disabled = true;
 	}
 
 	/**
-	 * Enable the command scheduler.
+	 * Enables the command scheduler.
 	 */
 	public void enable() {
 		m_disabled = false;
@@ -445,7 +452,7 @@ public final class CommandScheduler extends SendableBase {
 			double[] toCancel = m_cancelEntry.getDoubleArray(new double[0]);
 			if (toCancel.length > 0) {
 				for (double hash : toCancel) {
-					cancelCommand(ids.get(hash));
+					cancel(ids.get(hash));
 					ids.remove(hash);
 				}
 				m_cancelEntry.setDoubleArray(new double[0]);
