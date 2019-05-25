@@ -2,7 +2,6 @@ package org.team5940.pantry.exparimental.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
 
@@ -12,7 +11,6 @@ import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class SequentialCommandGroup extends CommandGroupBase {
-
 	private final List<Command> m_commands = new ArrayList<>();
 	private int m_currentCommandIndex = -1;
 	private boolean m_runWhenDisabled = true;
@@ -28,7 +26,7 @@ public class SequentialCommandGroup extends CommandGroupBase {
 	}
 
 	@Override
-	public void addCommands(Command... commands) {
+	public final void addCommands(Command... commands) {
 		requireUngrouped(commands);
 
 		if (m_currentCommandIndex != -1) {
@@ -83,11 +81,6 @@ public class SequentialCommandGroup extends CommandGroupBase {
 	@Override
 	public boolean isFinished() {
 		return m_currentCommandIndex == m_commands.size();
-	}
-
-	@Override
-	public Set<Subsystem> getRequirements() {
-		return m_requirements;
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
@@ -24,7 +23,6 @@ import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class SelectCommand extends SendableCommandBase {
-
 	private final Map<Object, Command> m_commands;
 	private final Supplier<Object> m_selector;
 	private final Supplier<Command> m_toRun;
@@ -92,11 +90,6 @@ public class SelectCommand extends SendableCommandBase {
 	@Override
 	public boolean isFinished() {
 		return m_selectedCommand.isFinished();
-	}
-
-	@Override
-	public Set<Subsystem> getRequirements() {
-		return m_requirements;
 	}
 
 	@Override

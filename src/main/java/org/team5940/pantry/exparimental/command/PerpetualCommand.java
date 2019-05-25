@@ -12,7 +12,6 @@ import static org.team5940.pantry.exparimental.command.CommandGroupBase.requireU
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class PerpetualCommand extends SendableCommandBase {
-
 	protected final Command m_command;
 
 	/**

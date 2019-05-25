@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class ParallelRaceGroup extends CommandGroupBase {
-
 	private final Set<Command> m_commands = new HashSet<>();
 	private boolean m_runWhenDisabled = true;
 	private boolean m_finished = true;
@@ -30,7 +29,7 @@ public class ParallelRaceGroup extends CommandGroupBase {
 	}
 
 	@Override
-	public void addCommands(Command... commands) {
+	public final void addCommands(Command... commands) {
 		requireUngrouped(commands);
 
 		if (!m_finished) {
@@ -82,11 +81,6 @@ public class ParallelRaceGroup extends CommandGroupBase {
 	@Override
 	public boolean isFinished() {
 		return m_finished;
-	}
-
-	@Override
-	public Set<Subsystem> getRequirements() {
-		return m_requirements;
 	}
 
 	@Override

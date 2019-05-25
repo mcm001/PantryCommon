@@ -3,7 +3,6 @@ package org.team5940.pantry.exparimental.command;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
 
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class ParallelCommandGroup extends CommandGroupBase {
-
 	//maps commands in this group to whether they are still running
 	private final Map<Command, Boolean> m_commands = new HashMap<>();
 	private boolean m_runWhenDisabled = true;
@@ -30,7 +28,7 @@ public class ParallelCommandGroup extends CommandGroupBase {
 	}
 
 	@Override
-	public void addCommands(Command... commands) {
+	public final void addCommands(Command... commands) {
 		requireUngrouped(commands);
 
 		if (m_commands.containsValue(true)) {
@@ -87,11 +85,6 @@ public class ParallelCommandGroup extends CommandGroupBase {
 	@Override
 	public boolean isFinished() {
 		return !m_commands.values().contains(true);
-	}
-
-	@Override
-	public Set<Subsystem> getRequirements() {
-		return m_requirements;
 	}
 
 	@Override

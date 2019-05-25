@@ -11,7 +11,6 @@ import java.util.function.BooleanSupplier;
  * {@link Command#interruptOn(BooleanSupplier)} to give it one.
  */
 public class StartEndCommand extends SendableCommandBase {
-
 	protected final Runnable m_onInit;
 	protected final Runnable m_onEnd;
 

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Notifier;
  * you should not use this class.
  */
 public class NotifierCommand extends SendableCommandBase {
-
 	protected final Notifier m_notifier;
 	protected final double m_period;
 

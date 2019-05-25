@@ -2,8 +2,6 @@ package org.team5940.pantry.exparimental.command;
 
 import static org.team5940.pantry.exparimental.command.CommandGroupBase.requireUngrouped;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -20,12 +18,10 @@ import java.util.function.BooleanSupplier;
  * <p>As a rule, CommandGroups require the union of the requirements of their component commands.
  */
 public class ConditionalCommand extends SendableCommandBase {
-
 	private final Command m_onTrue;
 	private final Command m_onFalse;
 	private final BooleanSupplier m_condition;
 	private Command m_selectedCommand;
-	private final Set<Subsystem> m_requirements = new HashSet<>();
 
 	/**
 	 * Creates a new ConditionalCommand.
@@ -69,11 +65,6 @@ public class ConditionalCommand extends SendableCommandBase {
 	@Override
 	public boolean isFinished() {
 		return m_selectedCommand.isFinished();
-	}
-
-	@Override
-	public Set<Subsystem> getRequirements() {
-		return m_requirements;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Timer;
  * CommandGroups.
  */
 public class WaitUntilCommand extends SendableCommandBase {
-
 	private final BooleanSupplier m_condition;
 
 	/**

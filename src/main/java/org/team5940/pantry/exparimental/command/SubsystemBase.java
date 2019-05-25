@@ -5,7 +5,6 @@ package org.team5940.pantry.exparimental.command;
  * method for setting the default command.
  */
 public class SubsystemBase implements Subsystem {
-
 	private Command m_defaultCommand;
 
 	public SubsystemBase() {

@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
  * {@link CommandScheduler}.
  */
 class CommandState {
-
 	/**
 	 * The time since this command was initialized.
 	 */
@@ -37,6 +36,6 @@ class CommandState {
 	}
 
 	double timeSinceInitialized() {
-		return Timer.getFPGATimestamp() - m_startTime;
+		return m_startTime != -1 ? Timer.getFPGATimestamp() - m_startTime : -1;
 	}
 }

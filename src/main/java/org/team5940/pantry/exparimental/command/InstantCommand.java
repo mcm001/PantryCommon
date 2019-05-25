@@ -8,7 +8,6 @@ import static java.util.Objects.requireNonNull;
  * or else subclass this command if desired.
  */
 public class InstantCommand extends SendableCommandBase {
-
 	private final Runnable m_toRun;
 
 	/**

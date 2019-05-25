@@ -4,7 +4,6 @@ package org.team5940.pantry.exparimental.command;
  * A command that prints a string when initialized.
  */
 public class PrintCommand extends InstantCommand {
-
 	/**
 	 * Creates a new a PrintCommand.
 	 *

@@ -12,7 +12,6 @@ import java.util.function.Consumer;
  * it than to inline it.
  */
 public class FunctionalCommand extends SendableCommandBase {
-
 	protected final Runnable m_onInit;
 	protected final Runnable m_onExecute;
 	protected final Consumer<Boolean> m_onEnd;

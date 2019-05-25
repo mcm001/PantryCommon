@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.IllegalUseOfCommandException;
  * command state and unpredictable execution.
  */
 public abstract class CommandGroupBase extends SendableCommandBase implements Command {
-
 	private static Set<Command> m_groupedCommands = Collections.newSetFromMap(new WeakHashMap<>());
 
 	static void registerGroupedCommands(Command... commands) {
@@ -42,6 +41,12 @@ public abstract class CommandGroupBase extends SendableCommandBase implements Co
 		m_groupedCommands.remove(command);
 	}
 
+	/**
+	 * Requires that the specified commands not have been already allocated to a CommandGroup.
+	 *   Throws an {@link IllegalUseOfCommandException} if commands have been allocated.
+	 *
+	 * @param commands The commands to check
+	 */
 	public static void requireUngrouped(Command... commands) {
 		if (!Collections.disjoint(Set.of(commands), getGroupedCommands())) {
 			throw new IllegalUseOfCommandException(

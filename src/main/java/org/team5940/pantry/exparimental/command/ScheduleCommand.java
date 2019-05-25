@@ -8,7 +8,6 @@ import java.util.Set;
  * of the scheduled commands, and will treat this command as finishing instantly.
  */
 public class ScheduleCommand extends SendableCommandBase {
-
 	private final Set<Command> m_toSchedule;
 
 	/**

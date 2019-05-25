@@ -11,7 +11,6 @@ import java.util.function.BooleanSupplier;
  * to execute a Runnable once, use {@link InstantCommand}.
  */
 public class RunCommand extends SendableCommandBase {
-
 	protected Runnable m_toRun;
 
 	/**
