@@ -32,7 +32,7 @@ public abstract class SendableCommandBase implements Sendable, Command {
 
 	@Override
 	public String getName() {
-		return m_name
+		return m_name;
 	}
 
 	@Override
