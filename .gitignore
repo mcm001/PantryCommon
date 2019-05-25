@@ -10,3 +10,9 @@
 build/spotlessJava
 src/main/.DS_Store
 .DS_Store
+*.keystream
+*.len
+*.tab
+*.tab_i
+*.at
+*.dylib
